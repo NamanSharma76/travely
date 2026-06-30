@@ -1,6 +1,6 @@
 ﻿"use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, Suspense } from "react"
 import Link from "next/link"
 import { useSearchParams, useRouter } from "next/navigation"
 import { MapPin, Clock, Star, Search, SlidersHorizontal, X, ArrowRight } from "lucide-react"
@@ -50,7 +50,7 @@ type Package = {
   provider: { businessName: string }
 }
 
-export default function PackagesPage() {
+function PackagesContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [packages, setPackages] = useState<Package[]>([])
@@ -336,5 +336,19 @@ export default function PackagesPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function PackagesPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center">
+        <div className="text-[var(--text-secondary)] text-sm animate-pulse">
+          Loading packages...
+        </div>
+      </div>
+    }>
+      <PackagesContent />
+    </Suspense>
   )
 }
